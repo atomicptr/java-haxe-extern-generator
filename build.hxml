@@ -1,0 +1,5 @@
+-cp src
+-main Generator
+-java build
+
+-cmd java -jar build/Generator.jar java.lang.String
