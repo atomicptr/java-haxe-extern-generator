@@ -95,13 +95,6 @@ class GeneratorType {
 	}
 
 	public static function get(_class:Class<Dynamic>):GeneratorType {
-		if(types == null) {
-			types = new Map<String, GeneratorType>();
-			imports = new Array<String>();
-
-			imports.push("java.StdTypes");
-		}
-
 		var name = _class.getCanonicalName();
 
 		if(types.exists(name)) {
@@ -121,5 +114,12 @@ class GeneratorType {
 
 			return types.get(name);
 		}
+	}
+
+	public static function __init__() {
+		types = new Map<String, GeneratorType>();
+		imports = new Array<String>();
+
+		imports.push("java.StdTypes");
 	}
 }

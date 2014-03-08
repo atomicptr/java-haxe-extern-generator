@@ -129,6 +129,7 @@ class GeneratorClass {
 			str += "\n\n";
 
 			for(imp in GeneratorType.imports) {
+
 				if(imp != this.name) {
 					str += "import " + imp + ";\n";
 				}
