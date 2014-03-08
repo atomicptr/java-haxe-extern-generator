@@ -1,5 +1,6 @@
 package;
 
+import java.NativeArray;
 import java.lang.Class;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -18,12 +19,15 @@ class GeneratorClass {
 
 	private var _class:Class<Dynamic>;
 
+	private var _inner_classes:NativeArray<Class<Dynamic>>;
+
 	public function new(_class:Class<Dynamic>) {
 		this._class = _class;
 
 		this.methodNames = new Array<String>();
 		this.methods = new Map<String, Array<GeneratorMethod>>();
 		this.fields = new Array<GeneratorField>();
+		this._inner_classes = this._class.getDeclaredClasses();
 
 		var mod:Int = this._class.getModifiers();
 
@@ -77,47 +81,62 @@ class GeneratorClass {
 		return this._class.getPackage().getName();
 	}
 
-	public function toString():String {
+	public function toString(?useImports:Bool = true):String {
 		var str = "";
 
-		str += "package " + this.jpackage + ";";
+		if(useImports) {
+			str += "package " + this.jpackage + ";";
 
-		str += "\n\n";
+			str += "\n\n";
 
-		for(imp in GeneratorType.imports) {
-			str += "import " + imp + ";\n";
+			for(imp in GeneratorType.imports) {
+				str += "import " + imp + ";\n";
+			}
+
+			str += "\n";
 		}
-
-		str += "\n";
 
 		str += "@:native(\"" + this.name + "\")\n";
 		str += "extern class " + this.getNameWithoutPackage() + " {\n";
 
-		str += "\n";
+		if(this.fields.length > 0) {
+			str += "\n";
 
-		for(field in this.fields) {
-			str += "\t" + field.toString() + "\n";
+			for(field in this.fields) {
+				str += "\t" + field.toString() + "\n";
+			}
+
+			str += "\n";
 		}
 
-		str += "\n";
+		if(Lambda.count(this.methods) > 0) {
+			for(methodGroup in this.methods) {
+				var arr = GeneratorMethod.overloadToString(methodGroup);
 
-		for(methodGroup in this.methods) {
-			var arr = GeneratorMethod.overloadToString(methodGroup);
+				if(arr.length > 1) {
+					str += "\n";
+				}
 
-			if(arr.length > 1) {
-				str += "\n";
-			}
-
-			for(overload in arr) {
-				str += "\t" + overload + "\n";
-			}
-
-			if(arr.length > 1) {
-				str += "\n";
+				for(overload in arr) {
+					str += "\t" + overload + "\n";
+				}
 			}
 		}
 
 		str += "}\n";
+
+		for(classObj in _inner_classes) {
+			var name = classObj.getCanonicalName();
+
+			if(name == null) {
+				continue;
+			}
+
+			var _class = new GeneratorClass(classObj);
+
+			str += "\n";
+			str += _class.toString(false);
+		}
 
 		return str;
 	}
