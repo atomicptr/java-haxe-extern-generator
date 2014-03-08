@@ -98,6 +98,8 @@ class GeneratorType {
 		if(types == null) {
 			types = new Map<String, GeneratorType>();
 			imports = new Array<String>();
+
+			imports.push("java.StdTypes");
 		}
 
 		var name = _class.getCanonicalName();
