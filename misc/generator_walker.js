@@ -5,11 +5,11 @@ var exec = require('exec-sync');
 var dir = process.argv[2];
 
 if(!dir) {
-	dir = ".";
-}
-
-if(dir.lastIndexOf('/') == -1) {
-	dir += "/";
+	dir = "";
+} else {
+	if(dir.lastIndexOf("/") == -1) {
+		dir += "/";
+	}
 }
 
 var files = glob.sync(dir + "**/*.class");
