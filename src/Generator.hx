@@ -72,6 +72,8 @@ class Generator {
 	private static function generate(_class:Class<Dynamic>) {
 		var gclass = new GeneratorClass(_class);
 
+		print("java-haxe-extern-generator: try to generate extern for: " + gclass.name);
+
 		var path = StringTools.replace(gclass.jpackage, ".", "/");
 
 		var file = new File("gen-externs/" + path);
@@ -87,9 +89,18 @@ class Generator {
 
 			writer.close();
 
-			trace("Done. Check out your new fancy extern class: " + file.toString());
+			print("java-haxe-extern-generator: done, generated: " + file.toString());
 		} catch(ex:java.lang.Exception) {
+			error("java-haxe-extern-generator: error with " + file.toString());
 			ex.printStackTrace();
 		}
+	}
+
+	private static function print(text:String) {
+		untyped __java__("System.out.println(text);");
+	}
+
+	private static function error(text:String) {
+		untyped __java__("System.err.println(text);");
 	}
 }

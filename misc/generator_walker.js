@@ -17,7 +17,9 @@ files.forEach(function(e) {
 });
 
 var generate = function(e) {
-	exec("java -jar Generator.jar . " + e);
+	var result = exec("java -jar Generator.jar . " + e);
+
+	console.log(result);
 }
 
 new_files.forEach(function(e) {
