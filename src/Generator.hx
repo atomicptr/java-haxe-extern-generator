@@ -4,6 +4,10 @@ import java.lang.reflect.Method;
 import java.lang.Class;
 import java.lang.ClassLoader;
 import java.lang.System;
+import java.io.FileWriter;
+import java.io.File;
+import java.net.URL;
+import java.net.URLClassLoader;
 
 class Generator {
 
@@ -15,9 +19,23 @@ class Generator {
 			return;
 		}
 
-		var classIdent:String = args[0];
+		var file:File = new File(args[0]);
 
-		var classLoader:ClassLoader = ClassLoader.getSystemClassLoader();
+		var url:URL = null;
+
+		try {
+			url = file.toURI().toURL();
+		} catch(ex:Dynamic) {
+			trace(ex);
+		}
+
+		var classIdent:String = args[1];
+
+		var urls:java.NativeArray<URL> = new java.NativeArray<URL>(1);
+
+		urls[0] = url;
+
+		var classLoader:ClassLoader = new URLClassLoader(urls);
 
 		var _class:Class<Dynamic> = null;
 
@@ -33,6 +51,18 @@ class Generator {
 	private static function parse(_class:Class<Dynamic>) {
 		var gclass = new GeneratorClass(_class);
 
-		trace(gclass.toString());
+		var file = new File(gclass.name + ".extern.hx");
+
+		try {
+			var writer = new FileWriter(file.getAbsoluteFile());
+
+			writer.write(gclass.toString());
+
+			writer.close();
+
+			trace("Done. Check out your new fancy extern class: " + gclass.name + ".extern.hx");
+		} catch(ex:Dynamic) {
+			trace(ex);
+		}
 	}
 }
