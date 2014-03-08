@@ -76,6 +76,9 @@ class GeneratorType {
 			case "boolean":
 				name = "Bool";
 
+			case "void":
+				name = "Void";
+
 			case "Object":
 				name = "Dynamic";
 		}
