@@ -59,17 +59,19 @@ class GeneratorType {
 			case "CharSequence":
 				name = "String";
 			case "char":
-				name = "String";
+				name = "Char16";
 
 			case "int":
 				name = "Int";
 			case "short":
-				name = "Int";
+				name = "Int16";
 			case "long":
-				name = "Int";
+				name = "Int64";
+			case "byte":
+				name = "Int8";
 
 			case "float":
-				name = "Float";
+				name = "Single";
 			case "double":
 				name = "Float";
 
