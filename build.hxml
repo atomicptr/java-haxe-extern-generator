@@ -3,3 +3,4 @@
 -java build
 
 -cmd java -jar build/Generator.jar . javax.swing.JFrame
+-cmd java -jar build/Generator.jar . java.awt.event.ActionListener

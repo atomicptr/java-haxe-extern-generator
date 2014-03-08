@@ -105,12 +105,14 @@ class GeneratorType {
 		if(types.exists(name)) {
 			return types.get(name);
 		} else {
-			if(name.indexOf('.') > -1) {
+			if(name.indexOf('.') > -1 && name.indexOf("java.lang") == -1) {
 				var copy = new String(name);
 
 				copy = copy.split('[]')[0];
 
-				imports.push(copy);
+				if(!Lambda.has(imports, copy)) {
+					imports.push(copy);
+				}
 			}
 
 			types.set(name, new GeneratorType(_class));

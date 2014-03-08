@@ -88,8 +88,8 @@ class Generator {
 			writer.close();
 
 			trace("Done. Check out your new fancy extern class: " + file.toString());
-		} catch(ex:Dynamic) {
-			trace(ex);
+		} catch(ex:java.lang.Exception) {
+			ex.printStackTrace();
 		}
 	}
 }

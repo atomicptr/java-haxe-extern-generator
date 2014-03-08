@@ -109,7 +109,12 @@ class GeneratorClass {
 	public function toString(?useImports:Bool = true):String {
 		var str = "";
 
-		var extendsClass = GeneratorType.get(this._class.getSuperclass());
+		var extendsClass = null;
+
+		if(!this.isInterface) {
+			extendsClass = GeneratorType.get(this._class.getSuperclass());
+		}
+
 		var _interfaces = this._class.getInterfaces();
 
 		var interfaces = new Array<GeneratorType>();
@@ -124,23 +129,36 @@ class GeneratorClass {
 			str += "\n\n";
 
 			for(imp in GeneratorType.imports) {
-				str += "import " + imp + ";\n";
+				if(imp != this.name) {
+					str += "import " + imp + ";\n";
+				}
 			}
 
 			str += "\n";
 		}
 
 		str += "@:native(\"" + this.name + "\")\n";
-		str += "extern class " + this.getNameWithoutPackage();
 
-		if(extendsClass.name != "java.lang.Object") {
-			str += " extends " + extendsClass.nameWithoutPackage;
+		if(!this.isInterface) {
+			str += "extern class " + this.getNameWithoutPackage();
+		} else {
+			str += "extern interface " + this.getNameWithoutPackage();
+		}
+
+		if(!this.isInterface) {
+			if(extendsClass.name != "java.lang.Object") {
+				str += " extends " + extendsClass.nameWithoutPackage;
+			}
 		}
 
 		if(interfaces.length > 0) {
 
 			for(inface in interfaces) {
-				str += " implements ";
+				if(this.isInterface) {
+					str += " implements ";
+				} else {
+					str += " extends ";
+				}
 
 				str += StringTools.replace(inface.nameWithoutPackage, "$", ".");
 			}
@@ -148,14 +166,17 @@ class GeneratorClass {
 
 		str += " {\n";
 
-		if(this.fields.length > 0) {
-			str += "\n";
+		if(!this.isInterface) {
 
-			for(field in this.fields) {
-				str += "\t" + field.toString() + "\n";
+			if(this.fields.length > 0) {
+				str += "\n";
+
+				for(field in this.fields) {
+					str += "\t" + field.toString() + "\n";
+				}
+
+				str += "\n";
 			}
-
-			str += "\n";
 		}
 
 		if(Lambda.count(this.methods) > 0) {
