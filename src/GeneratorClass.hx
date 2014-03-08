@@ -173,7 +173,11 @@ class GeneratorClass {
 				str += "\n";
 
 				for(field in this.fields) {
-					str += "\t" + field.toString() + "\n";
+
+					// ignore fields which contain a $ sign
+					if(field.toString().indexOf('$') == -1) {
+						str += "\t" + field.toString() + "\n";
+					}
 				}
 
 				str += "\n";

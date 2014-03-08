@@ -2,7 +2,17 @@
 var glob = require('glob')
 var exec = require('exec-sync');
 
-var files = glob.sync("android/**/*.class");
+var dir = process.argv[2];
+
+if(!dir) {
+	dir = ".";
+}
+
+if(dir.lastIndexOf('/') == -1) {
+	dir += "/";
+}
+
+var files = glob.sync(dir + "**/*.class");
 
 var new_files = [];
 
