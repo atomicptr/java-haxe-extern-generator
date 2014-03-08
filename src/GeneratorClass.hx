@@ -174,10 +174,10 @@ class GeneratorClass {
 
 				for(field in this.fields) {
 
-					// ignore fields which contain a $ sign
-					if(field.toString().indexOf('$') == -1) {
-						str += "\t" + field.toString() + "\n";
-					}
+					// replace "$" sign with "_"
+					var fieldText:String = StringTools.replace(field.toString(), "$", "_");
+
+					str += "\t" + fieldText + "\n";
 				}
 
 				str += "\n";
