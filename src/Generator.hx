@@ -45,13 +45,19 @@ class Generator {
 			trace(ex);
 		}
 
-		Generator.parse(_class);
+		Generator.generate(_class);
 	}
 
-	private static function parse(_class:Class<Dynamic>) {
+	private static function generate(_class:Class<Dynamic>) {
 		var gclass = new GeneratorClass(_class);
 
-		var file = new File(gclass.name + ".extern.hx");
+		var path = StringTools.replace(gclass.jpackage, ".", "/");
+
+		var file = new File("gen-externs/" + path);
+
+		file.mkdirs();
+
+		file = new File("gen-externs/" + path + "/" + gclass.getNameWithoutPackage() + ".hx");
 
 		try {
 			var writer = new FileWriter(file.getAbsoluteFile());
@@ -60,7 +66,7 @@ class Generator {
 
 			writer.close();
 
-			trace("Done. Check out your new fancy extern class: " + gclass.name + ".extern.hx");
+			trace("Done. Check out your new fancy extern class: " + file.toString());
 		} catch(ex:Dynamic) {
 			trace(ex);
 		}

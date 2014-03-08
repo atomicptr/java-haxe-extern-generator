@@ -67,8 +67,12 @@ class GeneratorClass {
 		}
 	}
 
-	private function getNameWithoutPackage():String {
-		var split = this.name.split('.');
+	public function getNameWithoutPackage():String {
+		return this.getClassName(this.name);
+	}
+
+	private function getClassName(pkg:String):String {
+		var split = pkg.split('.');
 
 		return split[split.length - 1];
 	}
@@ -84,6 +88,15 @@ class GeneratorClass {
 	public function toString(?useImports:Bool = true):String {
 		var str = "";
 
+		var extendsClass = GeneratorType.get(this._class.getSuperclass());
+		var _interfaces = this._class.getInterfaces();
+
+		var interfaces = new Array<GeneratorType>();
+
+		for(inface in _interfaces) {
+			interfaces.push(GeneratorType.get(inface));
+		}
+
 		if(useImports) {
 			str += "package " + this.jpackage + ";";
 
@@ -97,7 +110,30 @@ class GeneratorClass {
 		}
 
 		str += "@:native(\"" + this.name + "\")\n";
-		str += "extern class " + this.getNameWithoutPackage() + " {\n";
+		str += "extern class " + this.getNameWithoutPackage();
+
+		if(extendsClass.name != "java.lang.Object") {
+			str += " extends " + extendsClass.nameWithoutPackage;
+		}
+
+		if(interfaces.length > 0) {
+			str += " implements ";
+
+			var index:Int = 0;
+			var length:Int = interfaces.length;
+
+			for(inface in interfaces) {
+				str += StringTools.replace(inface.nameWithoutPackage, "$", ".");
+
+				if(index < length - 1) {
+					str += ", ";
+				}
+
+				index++;
+			}
+		}
+
+		str += " {\n";
 
 		if(this.fields.length > 0) {
 			str += "\n";

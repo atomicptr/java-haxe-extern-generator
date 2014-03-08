@@ -2,4 +2,4 @@
 -main Generator
 -java build
 
--cmd java -jar build/Generator.jar . java.lang.String
+-cmd java -jar build/Generator.jar . javax.swing.JFrame
