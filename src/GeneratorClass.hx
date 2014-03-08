@@ -138,19 +138,11 @@ class GeneratorClass {
 		}
 
 		if(interfaces.length > 0) {
-			str += " implements ";
-
-			var index:Int = 0;
-			var length:Int = interfaces.length;
 
 			for(inface in interfaces) {
+				str += " implements ";
+
 				str += StringTools.replace(inface.nameWithoutPackage, "$", ".");
-
-				if(index < length - 1) {
-					str += ", ";
-				}
-
-				index++;
 			}
 		}
 
