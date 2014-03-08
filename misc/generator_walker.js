@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 var glob = require('glob')
 var exec = require('exec-sync');
 
