@@ -83,6 +83,9 @@ class GeneratorType {
 
 			case "Object":
 				name = "Dynamic";
+
+			case "Class":
+				name = "Class<Dynamic>"
 		}
 
 		var result = name;
@@ -100,7 +103,7 @@ class GeneratorType {
 		if(types.exists(name)) {
 			return types.get(name);
 		} else {
-			if(name.indexOf('.') > -1 && name.indexOf("java.lang") == -1) {
+			if(name.indexOf('.') > -1) {
 				var copy = new String(name);
 
 				copy = copy.split('[]')[0];
