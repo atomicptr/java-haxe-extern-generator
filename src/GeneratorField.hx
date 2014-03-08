@@ -21,7 +21,7 @@ class GeneratorField {
 		this.isFinal = Modifier.isFinal(mod);
 		this.isStatic = Modifier.isStatic(mod);
 
-		this.type = new GeneratorType(field.getType());
+		this.type = GeneratorType.get(field.getType());
 	}
 
 	public function toString():String {

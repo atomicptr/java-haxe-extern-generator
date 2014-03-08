@@ -3,6 +3,7 @@ package;
 import java.lang.reflect.Method;
 import java.lang.Class;
 import java.lang.ClassLoader;
+import java.lang.System;
 
 class Generator {
 
@@ -32,10 +33,6 @@ class Generator {
 	private static function parse(_class:Class<Dynamic>) {
 		var gclass = new GeneratorClass(_class);
 
-		trace(gclass.name);
-
-		for(field in gclass.fields) {
-			trace(field.toString());
-		}
+		trace(gclass.toString());
 	}
 }

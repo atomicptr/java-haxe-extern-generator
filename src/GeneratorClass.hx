@@ -7,6 +7,7 @@ import java.lang.reflect.Modifier;
 class GeneratorClass {
 
 	public var name(get_name, null):String;
+	public var jpackage(get_jpackage, null):String;
 
 	public var isInterface(default, null):Bool;
 
@@ -62,7 +63,62 @@ class GeneratorClass {
 		}
 	}
 
+	private function getNameWithoutPackage():String {
+		var split = this.name.split('.');
+
+		return split[split.length - 1];
+	}
+
 	private function get_name():String {
 		return this._class.getCanonicalName();
+	}
+
+	private function get_jpackage():String {
+		return this._class.getPackage().getName();
+	}
+
+	public function toString():String {
+		var str = "";
+
+		str += "package " + this.jpackage + ";";
+
+		str += "\n\n";
+
+		for(imp in GeneratorType.imports) {
+			str += "import " + imp + ";\n";
+		}
+
+		str += "\n";
+
+		str += "@:native(\"" + this.name + "\")\n";
+		str += "extern class " + this.getNameWithoutPackage() + " {\n";
+
+		str += "\n";
+
+		for(field in this.fields) {
+			str += "\t" + field.toString() + "\n";
+		}
+
+		str += "\n";
+
+		for(methodGroup in this.methods) {
+			var arr = GeneratorMethod.overloadToString(methodGroup);
+
+			if(arr.length > 1) {
+				str += "\n";
+			}
+
+			for(overload in arr) {
+				str += "\t" + overload + "\n";
+			}
+
+			if(arr.length > 1) {
+				str += "\n";
+			}
+		}
+
+		str += "}\n";
+
+		return str;
 	}
 }
