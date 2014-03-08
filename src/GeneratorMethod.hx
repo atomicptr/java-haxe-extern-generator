@@ -11,12 +11,12 @@ class GeneratorMethod {
 	public var isStatic(default, null):Bool;
 
 	public var returnType(default, null):GeneratorType;
-	public var arguments(default, null):Array<GeneratorType>;
+	public var parameters(default, null):Array<GeneratorType>;
 
 	public function new(method:Method) {
 		this.name = method.getName();
 
-		this.arguments = new Array<GeneratorType>();
+		this.parameters = new Array<GeneratorType>();
 
 		var mod:Int = method.getModifiers();
 
@@ -24,6 +24,13 @@ class GeneratorMethod {
 		this.isFinal = Modifier.isFinal(mod);
 		this.isStatic = Modifier.isStatic(mod);
 
+		this.returnType = new GeneratorType(method.getReturnType());
+
+		var params = method.getParameterTypes();
+
+		for(param in params) {
+			this.parameters.push(new GeneratorType(param));
+		}
 	}
 
 }

@@ -32,10 +32,22 @@ class GeneratorClass {
 		var methods = this._class.getDeclaredMethods();
 
 		for(field in fields) {
+			var mod:Int = field.getModifiers();
+
+			if(Modifier.isPrivate(mod)) {
+				continue;
+			}
+
 			this.fields.push(new GeneratorField(field));
 		}
 
 		for(method in methods) {
+			var mod:Int = method.getModifiers();
+
+			if(Modifier.isPrivate(mod)) {
+				continue;
+			}
+
 			var methodName = method.getName();
 
 			if(!this.methods.exists(methodName)) {

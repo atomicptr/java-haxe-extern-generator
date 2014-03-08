@@ -33,5 +33,9 @@ class Generator {
 		var gclass = new GeneratorClass(_class);
 
 		trace(gclass.name);
+
+		for(field in gclass.fields) {
+			trace(field.toString());
+		}
 	}
 }
