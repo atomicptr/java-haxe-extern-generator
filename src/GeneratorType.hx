@@ -32,14 +32,16 @@ class GeneratorType {
 
 	public static var imports:Array<String>;
 
+	private var _class:Class<Dynamic>;
+
 	private function new(classType:Class<Dynamic>) {
+		this._class = classType;
+
 		this.name = classType.getCanonicalName();
 	}
 
 	private function get_nameWithoutPackage():String {
-		var new_name = this.name.split('.');
-
-		return new_name[new_name.length - 1];
+		return GeneratorClass.getClassName(this._class);
 	}
 
 	public function asHaxeType():String {

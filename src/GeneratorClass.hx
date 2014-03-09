@@ -103,13 +103,19 @@ class GeneratorClass {
 	}
 
 	public function getNameWithoutPackage():String {
-		return this.getClassName(this.name);
+		return getClassName(_class);
 	}
 
-	private function getClassName(pkg:String):String {
-		var split = pkg.split('.');
+	public static function getClassName(_class:Class<Dynamic>):String {
+		if(_class.getName().indexOf('.') > -1) {
+			var packageNameLength:Int = _class.getPackage().getName().length;
 
-		return split[split.length - 1];
+			var name:String = _class.getCanonicalName();
+
+			return name.substring(packageNameLength + 1, name.length);
+		} else {
+			return _class.getName();
+		}
 	}
 
 	private function get_name():String {
@@ -175,7 +181,9 @@ class GeneratorClass {
 					str += " extends ";
 				}
 
-				str += StringTools.replace(inface.nameWithoutPackage, "$", ".");
+				var interfaceName:String = inface.nameWithoutPackage;
+
+				str += inface.nameWithoutPackage; //StringTools.replace(inface.nameWithoutPackage, "$", ".");
 			}
 		}
 
