@@ -102,6 +102,15 @@ class GeneratorClass {
 	}
 
 	public static function getClassName(_class:Class<Dynamic>, ?replaceDotWithUnderscore:Bool = false):String {
+		if(_class == null) {
+			return "Dynamic";
+		}
+
+		// is array
+		if(_class.getName().indexOf('[L') > -1) {
+			return "Array<Dynamic>";
+		}
+
 		if(_class.getName().indexOf('.') > -1) {
 			var packageNameLength:Int = _class.getPackage().getName().length;
 

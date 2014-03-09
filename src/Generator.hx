@@ -33,6 +33,7 @@ import java.net.URLClassLoader;
 class Generator {
 
 	public static var classLoader(default, null):ClassLoader;
+	public static var CURRENT_FILE:String = null;
 
 	public static function main() {
 		var args = Sys.args();
@@ -84,6 +85,8 @@ class Generator {
 
 		file = new File("gen-externs/" + path + "/" + gclass.getNameWithoutPackage() + ".hx");
 
+		CURRENT_FILE = file.toString();
+
 		try {
 			var writer = new FileWriter(file.getAbsoluteFile());
 
@@ -91,18 +94,18 @@ class Generator {
 
 			writer.close();
 
-			print("java-haxe-extern-generator: done, generated: " + file.toString());
+			print("java-haxe-extern-generator: done, generated: " + CURRENT_FILE);
 		} catch(ex:java.lang.Exception) {
-			error("java-haxe-extern-generator: error with " + file.toString());
+			error("java-haxe-extern-generator: error with " + CURRENT_FILE);
 			ex.printStackTrace();
 		}
 	}
 
-	private static function print(text:String) {
+	public static function print(text:String) {
 		untyped __java__("System.out.println(text);");
 	}
 
-	private static function error(text:String) {
+	public static function error(text:String) {
 		untyped __java__("System.err.println(text);");
 	}
 }

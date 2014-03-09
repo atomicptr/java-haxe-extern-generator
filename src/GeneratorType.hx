@@ -114,21 +114,24 @@ class GeneratorType {
 			var generatorType:GeneratorType = new GeneratorType(_class);
 
 			if(name.indexOf('.') > -1) {
-				var copy = new String(name);
+				var isArray:Bool = name.indexOf('[]') > -1;
 
-				copy = copy.split('[]')[0];
+				var __class = _class;
 
-				var className:String = GeneratorClass.getClassName(_class);
-				var isInnerClass:Bool = className.indexOf('.') > -1;
+				if(isArray) {
+					__class = _class.getComponentType();
+				}
 
 				var importClass = null;
 
+				var className = GeneratorClass.getClassName(__class);
+
 				try {
-					if(!isInnerClass) {
-						importClass = new GeneratorType(Generator.classLoader.loadClass(copy));
+					if(!isInnerClass(__class)) {
+						importClass = new GeneratorType(__class);
 
 					} else {
-						var parentClass:String = _class.getPackage().getName() + "." + className.split('.')[0];
+						var parentClass:String = __class.getPackage().getName() + "." + className.split('.')[0];
 
 						importClass = new GeneratorType(Generator.classLoader.loadClass(parentClass));
 					}
@@ -155,6 +158,11 @@ class GeneratorType {
 		}
 
 		return false;
+	}
+
+	private static function isInnerClass(_class:Class<Dynamic>):Bool {
+		var className:String = GeneratorClass.getClassName(_class);
+		return className.indexOf('.') > -1;
 	}
 
 	public static function __init__() {
