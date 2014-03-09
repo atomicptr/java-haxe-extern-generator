@@ -155,7 +155,7 @@ class GeneratorClass {
 		if(interfaces.length > 0) {
 
 			for(inface in interfaces) {
-				if(this.isInterface) {
+				if(!this.isInterface) {
 					str += " implements ";
 				} else {
 					str += " extends ";
