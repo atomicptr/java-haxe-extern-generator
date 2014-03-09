@@ -40,7 +40,7 @@ class GeneratorClass {
 
 	private var _class:Class<Dynamic>;
 
-	private var _inner_classes:NativeArray<Class<Dynamic>>;
+	private var inner_classes:Array<GeneratorClass>;
 
 	public function new(_class:Class<Dynamic>) {
 		this._class = _class;
@@ -48,7 +48,21 @@ class GeneratorClass {
 		this.methodNames = new Array<String>();
 		this.methods = new Map<String, Array<GeneratorMethod>>();
 		this.fields = new Array<GeneratorField>();
-		this._inner_classes = this._class.getDeclaredClasses();
+		this.inner_classes = new Array<GeneratorClass>();
+
+		var _inner_classes = this._class.getDeclaredClasses();
+
+		for(classObj in _inner_classes) {
+			var name = classObj.getCanonicalName();
+
+			if(name == null) {
+				continue;
+			}
+
+			var _class = new GeneratorClass(classObj);
+
+			this.inner_classes.push(_class);
+		}
 
 		var mod:Int = this._class.getModifiers();
 
@@ -200,15 +214,7 @@ class GeneratorClass {
 
 		str += "}\n";
 
-		for(classObj in _inner_classes) {
-			var name = classObj.getCanonicalName();
-
-			if(name == null) {
-				continue;
-			}
-
-			var _class = new GeneratorClass(classObj);
-
+		for(_class in this.inner_classes) {
 			str += "\n";
 			str += _class.toString(false);
 		}
