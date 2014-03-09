@@ -59,19 +59,19 @@ class GeneratorType {
 			case "CharSequence":
 				name = "String";
 			case "char":
-				name = "Char16";
+				name = "String";
 
 			case "int":
 				name = "Int";
 			case "short":
-				name = "Int16";
+				name = "Int";
 			case "long":
-				name = "Int64";
+				name = "Int";
 			case "byte":
-				name = "Int8";
+				name = "Int";
 
 			case "float":
-				name = "Single";
+				name = "Float";
 			case "double":
 				name = "Float";
 
@@ -85,7 +85,13 @@ class GeneratorType {
 				name = "Dynamic";
 
 			case "Class":
-				name = "Class<Dynamic>"
+				name = "Class<Dynamic>";
+
+			case "List":
+				name = "List<Dynamic>";
+
+			case "ArrayList":
+				name = "ArrayList<Dynamic>";
 		}
 
 		var result = name;
@@ -122,7 +128,5 @@ class GeneratorType {
 	public static function __init__() {
 		types = new Map<String, GeneratorType>();
 		imports = new Array<String>();
-
-		imports.push("java.StdTypes");
 	}
 }
