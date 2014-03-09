@@ -32,6 +32,8 @@ import java.net.URLClassLoader;
 
 class Generator {
 
+	public static var classLoader(default, null):ClassLoader;
+
 	public static function main() {
 		var args = Sys.args();
 
@@ -56,12 +58,12 @@ class Generator {
 
 		urls[0] = url;
 
-		var classLoader:ClassLoader = new URLClassLoader(urls);
+		Generator.classLoader = new URLClassLoader(urls);
 
 		var _class:Class<Dynamic> = null;
 
 		try {
-			_class = classLoader.loadClass(classIdent);
+			_class = Generator.classLoader.loadClass(classIdent);
 		} catch(ex:Dynamic) {
 			trace(ex);
 		}

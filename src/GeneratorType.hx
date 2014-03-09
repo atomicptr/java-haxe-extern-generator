@@ -30,7 +30,7 @@ class GeneratorType {
 
 	private static var types:Map<String, GeneratorType>;
 
-	public static var imports:Array<String>;
+	public static var imports:Array<GeneratorType>;
 
 	private var _class:Class<Dynamic>;
 
@@ -41,7 +41,7 @@ class GeneratorType {
 	}
 
 	private function get_nameWithoutPackage():String {
-		return GeneratorClass.getClassName(this._class);
+		return GeneratorClass.getClassName(this._class, true);
 	}
 
 	public function asHaxeType():String {
@@ -111,24 +111,54 @@ class GeneratorType {
 		if(types.exists(name)) {
 			return types.get(name);
 		} else {
+			var generatorType:GeneratorType = new GeneratorType(_class);
+
 			if(name.indexOf('.') > -1) {
 				var copy = new String(name);
 
 				copy = copy.split('[]')[0];
 
-				if(!Lambda.has(imports, copy)) {
-					imports.push(copy);
+				var className:String = GeneratorClass.getClassName(_class);
+				var isInnerClass:Bool = className.indexOf('.') > -1;
+
+				var importClass = null;
+
+				try {
+					if(!isInnerClass) {
+						importClass = new GeneratorType(Generator.classLoader.loadClass(copy));
+
+					} else {
+						var parentClass:String = _class.getPackage().getName() + "." + className.split('.')[0];
+
+						importClass = new GeneratorType(Generator.classLoader.loadClass(parentClass));
+					}
+				} catch(ex:java.lang.Exception) {
+					ex.printStackTrace();
+				}
+
+				if(!importExists(importClass) && importClass != null) {
+					imports.push(importClass);
 				}
 			}
 
-			types.set(name, new GeneratorType(_class));
+			types.set(name, generatorType);
 
-			return types.get(name);
+			return generatorType;
 		}
+	}
+
+	private static function importExists(importClass:GeneratorType):Bool {
+		for(generatorType in imports) {
+			if(generatorType.name == importClass.name) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	public static function __init__() {
 		types = new Map<String, GeneratorType>();
-		imports = new Array<String>();
+		imports = new Array<GeneratorType>();
 	}
 }

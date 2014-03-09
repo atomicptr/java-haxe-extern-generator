@@ -36,8 +36,6 @@ class GeneratorClass {
 	public var fields(default, null):Array<GeneratorField>;
 	public var methods(default, null):Map<String, Array<GeneratorMethod>>;
 
-	private var methodNames:Array<String>;
-
 	private var _class:Class<Dynamic>;
 
 	private var inner_classes:Array<GeneratorClass>;
@@ -45,7 +43,6 @@ class GeneratorClass {
 	public function new(_class:Class<Dynamic>) {
 		this._class = _class;
 
-		this.methodNames = new Array<String>();
 		this.methods = new Map<String, Array<GeneratorMethod>>();
 		this.fields = new Array<GeneratorField>();
 		this.inner_classes = new Array<GeneratorClass>();
@@ -92,8 +89,6 @@ class GeneratorClass {
 
 			if(!this.methods.exists(methodName)) {
 				this.methods.set(methodName, new Array<GeneratorMethod>());
-
-				methodNames.push(methodName);
 			}
 
 			var genMethodArr = this.methods.get(methodName);
@@ -102,17 +97,23 @@ class GeneratorClass {
 		}
 	}
 
-	public function getNameWithoutPackage():String {
-		return getClassName(_class);
+	public function getNameWithoutPackage(?replaceDotWithUnderscore:Bool = false):String {
+		return getClassName(_class, replaceDotWithUnderscore);
 	}
 
-	public static function getClassName(_class:Class<Dynamic>):String {
+	public static function getClassName(_class:Class<Dynamic>, ?replaceDotWithUnderscore:Bool = false):String {
 		if(_class.getName().indexOf('.') > -1) {
 			var packageNameLength:Int = _class.getPackage().getName().length;
 
 			var name:String = _class.getCanonicalName();
 
-			return name.substring(packageNameLength + 1, name.length);
+			name = name.substring(packageNameLength + 1, name.length);
+
+			if(replaceDotWithUnderscore) {
+				name = StringTools.replace(name, ".", "_");
+			}
+
+			return name;
 		} else {
 			return _class.getName();
 		}
@@ -150,8 +151,8 @@ class GeneratorClass {
 
 			for(imp in GeneratorType.imports) {
 
-				if(imp != this.name) {
-					str += "import " + imp + ";\n";
+				if(imp.name != this.name) {
+					str += "import " + imp.name + ";\n";
 				}
 			}
 
@@ -161,9 +162,9 @@ class GeneratorClass {
 		str += "@:native(\"" + this.name + "\")\n";
 
 		if(!this.isInterface) {
-			str += "extern class " + this.getNameWithoutPackage();
+			str += "extern class " + this.getNameWithoutPackage(true);
 		} else {
-			str += "extern interface " + this.getNameWithoutPackage();
+			str += "extern interface " + this.getNameWithoutPackage(true);
 		}
 
 		if(!this.isInterface) {
@@ -183,7 +184,11 @@ class GeneratorClass {
 
 				var interfaceName:String = inface.nameWithoutPackage;
 
-				str += inface.nameWithoutPackage; //StringTools.replace(inface.nameWithoutPackage, "$", ".");
+				interfaceName = StringTools.replace(interfaceName, "$", ".");
+
+				interfaceName = StringTools.replace(interfaceName, ".", "_");
+
+				str += interfaceName;
 			}
 		}
 
