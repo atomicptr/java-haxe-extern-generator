@@ -107,7 +107,7 @@ class GeneratorClass {
 		}
 
 		// is array
-		if(_class.getName().indexOf('[L') > -1) {
+		if(_class.getName().indexOf('[') > -1) {
 			return "Array<Dynamic>";
 		}
 
